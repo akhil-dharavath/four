@@ -3,10 +3,11 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   deleteBlogApi,
   getOneBlogApi,
+  openaiCommentApi,
   subscribeApi,
   unSubscribeApi,
 } from "../api/blogs";
-import { getUserApi } from "../api/authentication";
+import { getAllUsers, getUserApi } from "../api/authentication";
 import { Badge, Button } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
@@ -103,33 +104,30 @@ const Blog = () => {
   };
 
   const [users, setUsers] = useState({});
-  useEffect(() => {
-    if (!localStorage.getItem("token")) {
-      navigate("/login");
+  const fetchAllUsers = async () => {
+    const res = await getAllUsers();
+    if (res.data) {
+      setUsers(res.data);
+    } else {
+      alert("You are not Authorized");
     }
-    const fetchUser = async (id) => {
-      const res = await getUserApi(id);
+  };
+
+  const generateComment = async () => {
+    if (blog) {
+      const res = await openaiCommentApi(blog.title, blog.description);
       if (res.data) {
-        setUsers((prevUsers) => ({
-          ...prevUsers,
-          [id]: res.data.username,
-        }));
+        setComment(res.data);
       } else {
-        console.log(res);
-        setUsers((prevUsers) => ({
-          ...prevUsers,
-          [id]: "Unknown",
-        }));
+        alert(res.response.data.message);
       }
-    };
-    blog &&
-      blog.comments.forEach((comment) => {
-        if (!users[comment.user]) {
-          fetchUser(comment.user);
-        }
-      });
+    }
+  };
+
+  useEffect(() => {
+    fetchAllUsers();
     // eslint-disable-next-line
-  }, [blog && blog.comments]);
+  }, []);
 
   return (
     <div>
@@ -248,21 +246,19 @@ const Blog = () => {
                         blog.comments.length > 0 &&
                         blog &&
                         blog.comments.map((comment, index) => (
-                          // <div key={index}>{comment.user} {comment.comment}</div>
                           <div key={index} className="d-flex">
-                            {/* <img
-                              src={require("../assets/author.jpg")}
-                              alt="author"
-                              style={{
-                                width: 50,
-                                height: 50,
-                                borderRadius: "50%",
-                                marginRight: 10,
-                                marginBottom: 10,
-                              }}
-                            /> */}
                             <div className="text-black">
-                              <b>{users[comment.user]}</b>
+                              <b>
+                                {users &&
+                                users.length > 0 &&
+                                users.filter(
+                                  (user) => user._id === comment.user
+                                ).length > 0
+                                  ? users.filter(
+                                      (user) => user._id === comment.user
+                                    )[0].username
+                                  : "Unknown"}
+                              </b>
                               <br />
                               {comment.comment}
                             </div>
@@ -284,13 +280,22 @@ const Blog = () => {
                           onChange={(e) => setComment(e.target.value)}
                           className="comment-input"
                         />
-                        <button
-                          className="bg-cyan-500 rounded-lg border-2 border-cyan-600 p-2  w-auto absolute"
-                          style={{ right: "0.5%", top: "6%" }}
-                          type="submit"
-                        >
-                          Post
-                        </button>
+                        <div className="comment-buttons">
+                          <Button
+                            variant="contained"
+                            onClick={() => generateComment()}
+                            sx={{ margin: "10px 5px" }}
+                          >
+                           Auto Generate
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            type="submit"
+                            sx={{ margin: "10px 5px" }}
+                          >
+                            Post
+                          </Button>
+                        </div>
                       </form>
                     </div>
                   </DialogContent>

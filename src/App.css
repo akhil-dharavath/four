@@ -8,10 +8,13 @@
   background-color: #f3f2f2 !important;
   border: none !important;
   padding: 8px 10px;
-  padding-right: 80px !important;
   width: 100%;
   border: 2px solid black !important;
   font-size: 20px !important;
   transition: all 0.3s linear;
   border-radius: 10px;
+}
+
+.comment-buttons {
+  display: flex;
 }
