@@ -4,8 +4,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { getAllBlogsApi, getTopStoriesApi } from "../api/blogs";
 import { getUserApi } from "../api/authentication";
 import axios from "axios";
+import { TextField, Typography } from "@mui/material";
 
-const Blogs = ({ search }) => {
+const Blogs = ({ search, setSearch }) => {
   const navigate = useNavigate();
   const location = useLocation().pathname.slice(1);
   const [blogs, setBlogs] = useState([]);
@@ -59,20 +60,38 @@ const Blogs = ({ search }) => {
     } else {
       getUser();
     }
-    getAddress();
+    // getAddress();
     // eslint-disable-next-line
   }, []);
 
   useEffect(() => {
-    getTopStories();
+    // getTopStories();
     // eslint-disable-next-line
   }, [address]);
 
   return (
     <section className="text-gray-600 body-font">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          marginRight:20
+        }}
+      >
+        <Typography sx={{mr:2}}>Search Blog: </Typography>
+        <TextField
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search blog"
+          size="small"
+          className="pt-4 pb-4"
+        />
+      </div>
       <div className="container px-5 py-12 mx-auto">
         <div className="flex flex-wrap -my-8">
-          {topStories &&
+          {location !== "unsubscribed" && search==="" &&
+            topStories &&
             topStories.length > 0 &&
             topStories.map((story) => (
               <div className="py-2 px-2 lg:w-1/4 ">
@@ -87,7 +106,12 @@ const Blogs = ({ search }) => {
                       </span>
                     </h1>
                     <p>Published: {story.date}</p>
-                    <a href={`${story.link}`} className="text-indigo-500" target="_blank" rel="noreferrer">
+                    <a
+                      href={`${story.link}`}
+                      className="text-indigo-500"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       Learn More &rarr;
                     </a>
                   </div>

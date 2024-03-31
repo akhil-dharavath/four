@@ -6,6 +6,7 @@ import Blog from "./pages/Blog";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
+import { useState } from "react";
 
 const sections = [
   { title: "Academic", url: "academic" },
@@ -22,18 +23,19 @@ const sections = [
 ];
 
 function App() {
+  const [search,setSearch] = useState("")
   return (
     <BrowserRouter>
       <Header sections={sections} />
       <Routes>
-        <Route exact path="/" element={<Blogs />} />
-        <Route exact path="/unsubscribed" element={<Blogs />} />
+        <Route exact path="/" element={<Blogs search={search} setSearch={setSearch} />} />
+        <Route exact path="/unsubscribed" element={<Blogs search={search} setSearch={setSearch}/>} />
         {sections.map((section) => (
           <Route
             key={section.url}
             path={`/${section.url}`}
             exact
-            element={<Blogs />}
+            element={<Blogs search={search} setSearch={setSearch}/>}
           />
         ))}
         <Route exact path="/blogs/:id" element={<Blog />} />
