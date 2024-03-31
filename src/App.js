@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
 import { useState } from "react";
+import { SnackbarProvider } from "notistack";
 
 const sections = [
   { title: "Academic", url: "academic" },
@@ -23,27 +24,40 @@ const sections = [
 ];
 
 function App() {
-  const [search,setSearch] = useState("")
+  const [search, setSearch] = useState("");
   return (
-    <BrowserRouter>
-      <Header sections={sections} />
-      <Routes>
-        <Route exact path="/" element={<Blogs search={search} setSearch={setSearch} />} />
-        <Route exact path="/unsubscribed" element={<Blogs search={search} setSearch={setSearch}/>} />
-        {sections.map((section) => (
+    <SnackbarProvider
+      maxSnack={3}
+      anchorOrigin={{ vertical: "top", horizontal: "center" }}
+    >
+      <BrowserRouter>
+        <Header sections={sections} />
+        <Routes>
           <Route
-            key={section.url}
-            path={`/${section.url}`}
             exact
-            element={<Blogs search={search} setSearch={setSearch}/>}
+            path="/"
+            element={<Blogs search={search} setSearch={setSearch} />}
           />
-        ))}
-        <Route exact path="/blogs/:id" element={<Blog />} />
-        <Route exact path="/login" element={<Login />} />
-        <Route exact path="/register" element={<Register />} />
-        <Route exact path="/profile" element={<Profile />} />
-      </Routes>
-    </BrowserRouter>
+          <Route
+            exact
+            path="/unsubscribed"
+            element={<Blogs search={search} setSearch={setSearch} />}
+          />
+          {sections.map((section) => (
+            <Route
+              key={section.url}
+              path={`/${section.url}`}
+              exact
+              element={<Blogs search={search} setSearch={setSearch} />}
+            />
+          ))}
+          <Route exact path="/blogs/:id" element={<Blog />} />
+          <Route exact path="/login" element={<Login />} />
+          <Route exact path="/register" element={<Register />} />
+          <Route exact path="/profile" element={<Profile />} />
+        </Routes>
+      </BrowserRouter>
+    </SnackbarProvider>
   );
 }
 

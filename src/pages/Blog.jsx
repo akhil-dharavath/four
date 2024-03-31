@@ -15,6 +15,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useTheme } from "@mui/material/styles";
 import { addCommentApi } from "../api/blogs";
+import { enqueueSnackbar } from "notistack";
 
 const Blog = () => {
   const { id } = useParams();
@@ -46,6 +47,7 @@ const Blog = () => {
   const handleDelete = async () => {
     const res = await deleteBlogApi(id);
     if (res.data) {
+      enqueueSnackbar("Blog has been deleted!",{variant:'success'})
       navigate("/");
     } else {
       alert(res.response.data.message);
