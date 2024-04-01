@@ -5,7 +5,6 @@ import Blogs from "./pages/Blogs";
 import Blog from "./pages/Blog";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import Profile from "./pages/Profile";
 import { useState } from "react";
 import { SnackbarProvider } from "notistack";
 
@@ -54,7 +53,6 @@ function App() {
           <Route exact path="/blogs/:id" element={<Blog />} />
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/register" element={<Register />} />
-          <Route exact path="/profile" element={<Profile />} />
         </Routes>
       </BrowserRouter>
     </SnackbarProvider>

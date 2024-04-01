@@ -23,12 +23,32 @@ const Blog = () => {
   const [user, setUser] = useState({});
   const [subscribed, setSubscribed] = useState(null);
 
+  const navigate = useNavigate();
+  const handleDelete = async () => {
+    const res = await deleteBlogApi(id);
+    if (res.data) {
+      enqueueSnackbar("Blog has been deleted!", { variant: "success" });
+      navigate("/");
+    } else {
+      alert(res.response.data.message);
+    }
+  };
+
   const getBlog = async () => {
     const res = await getOneBlogApi(id);
     if (res.data) {
       setBlog(res.data);
     } else {
       alert(res.response.data.messege);
+    }
+  };
+
+  const handleSubscribe = async () => {
+    const res = await subscribeApi(id);
+    if (res.data) {
+      setSubscribed(true);
+    } else {
+      alert(res.response.data.message);
     }
   };
 
@@ -40,26 +60,6 @@ const Blog = () => {
       setSubscribed(count === 0);
     } else {
       alert(res.response.data.messege);
-    }
-  };
-
-  const navigate = useNavigate();
-  const handleDelete = async () => {
-    const res = await deleteBlogApi(id);
-    if (res.data) {
-      enqueueSnackbar("Blog has been deleted!",{variant:'success'})
-      navigate("/");
-    } else {
-      alert(res.response.data.message);
-    }
-  };
-
-  const handleSubscribe = async () => {
-    const res = await subscribeApi(id);
-    if (res.data) {
-      setSubscribed(true);
-    } else {
-      alert(res.response.data.message);
     }
   };
 
@@ -288,7 +288,7 @@ const Blog = () => {
                             onClick={() => generateComment()}
                             sx={{ margin: "10px 5px" }}
                           >
-                           Auto Generate
+                            Auto Generate
                           </Button>
                           <Button
                             variant="outlined"

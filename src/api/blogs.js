@@ -1,18 +1,5 @@
 import axios from "axios";
 
-const getAllBlogsApi = async () => {
-  try {
-    const response = await axios({
-      headers: { "content-type": "application/json" },
-      url: `${process.env.REACT_APP_URL}/blogs/`,
-      method: "GET",
-    });
-    return response;
-  } catch (error) {
-    return error;
-  }
-};
-
 const createBlogApi = async (data) => {
   const authtoken = localStorage.getItem("token");
   try {
@@ -28,11 +15,11 @@ const createBlogApi = async (data) => {
   }
 };
 
-const getOneBlogApi = async (id) => {
+const getAllBlogsApi = async () => {
   try {
     const response = await axios({
       headers: { "content-type": "application/json" },
-      url: `${process.env.REACT_APP_URL}/blogs/${id}`,
+      url: `${process.env.REACT_APP_URL}/blogs/`,
       method: "GET",
     });
     return response;
@@ -55,14 +42,12 @@ const deleteBlogApi = async (id) => {
   }
 };
 
-const addCommentApi = async (id, comment) => {
-  const authtoken = localStorage.getItem("token");
+const getOneBlogApi = async (id) => {
   try {
     const response = await axios({
-      headers: { "content-type": "application/json", authtoken },
+      headers: { "content-type": "application/json" },
       url: `${process.env.REACT_APP_URL}/blogs/${id}`,
-      method: "POST",
-      data: JSON.stringify({ comment }),
+      method: "GET",
     });
     return response;
   } catch (error) {
@@ -84,13 +69,14 @@ const subscribeApi = async (id) => {
   }
 };
 
-const unSubscribeApi = async (id) => {
+const addCommentApi = async (id, comment) => {
   const authtoken = localStorage.getItem("token");
   try {
     const response = await axios({
       headers: { "content-type": "application/json", authtoken },
-      url: `${process.env.REACT_APP_URL}/blogs/unsubscribe/${id}`,
-      method: "PUT",
+      url: `${process.env.REACT_APP_URL}/blogs/${id}`,
+      method: "POST",
+      data: JSON.stringify({ comment }),
     });
     return response;
   } catch (error) {
@@ -105,6 +91,20 @@ const openaiCommentApi = async (title, description) => {
       url: `${process.env.REACT_APP_URL}/blogs/comment/openai-comment`,
       method: "POST",
       data: JSON.stringify({ title, description }),
+    });
+    return response;
+  } catch (error) {
+    return error;
+  }
+};
+
+const unSubscribeApi = async (id) => {
+  const authtoken = localStorage.getItem("token");
+  try {
+    const response = await axios({
+      headers: { "content-type": "application/json", authtoken },
+      url: `${process.env.REACT_APP_URL}/blogs/unsubscribe/${id}`,
+      method: "PUT",
     });
     return response;
   } catch (error) {
@@ -164,6 +164,5 @@ export {
   openaiCommentApi,
   getTopStoriesApi,
   suggestApi,
-  getEventApi
+  getEventApi,
 };
-
